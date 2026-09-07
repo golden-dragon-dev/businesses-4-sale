@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Businesses 4 Sale mark">
+  <rect width="512" height="512" fill="#FFFCFA"/>
+  <circle cx="200" cy="210" r="118" fill="#D61826"/>
+  <circle cx="300" cy="290" r="118" fill="#F2BA00"/>
+  <circle cx="256" cy="256" r="62" fill="#FFFCFA"/>
+  <text x="256" y="286" text-anchor="middle"
+        font-family="Arial Black, Arial, Helvetica, sans-serif"
+        font-size="120" font-weight="800" fill="#161618">4</text>
+</svg>

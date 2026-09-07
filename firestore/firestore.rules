@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Listings are publicly readable for buyer browse (no buyer login).
+    // Writes are open for MVP Join submissions from the mobile app.
+    // Tighten with App Check / Cloud Functions before production scale.
+    match /listings/{listingId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll([
+          'companyName',
+          'businessTypeCode',
+          'location',
+          'contactName',
+          'createdAt'
+        ])
+        && request.resource.data.companyName is string
+        && request.resource.data.companyName.size() > 0
+        && request.resource.data.companyName.size() < 200
+        && request.resource.data.location is string
+        && request.resource.data.location.size() < 500
+        && request.resource.data.contactName is string
+        && request.resource.data.contactName.size() < 120
+        && (
+          (request.resource.data.contactPhone is string &&
+            request.resource.data.contactPhone.size() > 0) ||
+          (request.resource.data.contactEmail is string &&
+            request.resource.data.contactEmail.size() > 0)
+        );
+      allow update, delete: if false; // manage via Firebase Console
+    }
+  }
+}

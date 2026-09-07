@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BUS.SALE">
+  <defs><clipPath id="c"><circle cx="256" cy="256" r="248"/></clipPath></defs>
+  <g clip-path="url(#c)">
+    <rect width="512" height="256" fill="#D61826"/>
+    <rect y="256" width="512" height="256" fill="#F2BA00"/>
+    <rect x="36" y="178" width="440" height="156" rx="78" ry="78" fill="#FFFCFA"/>
+  </g>
+  <text x="256" y="274" text-anchor="middle"
+        font-family="Arial Black, Arial, Helvetica, sans-serif"
+        font-size="58" font-weight="800" fill="#161618" letter-spacing="1.5">BUS.SALE</text>
+</svg>

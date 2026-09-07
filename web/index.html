@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta content="IE=edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Businesses 4 Sale — list and browse businesses for sale.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Businesses 4 Sale">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <title>Businesses 4 Sale</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #F5F0E8;
+      color: #1A1412;
+      font-family: Bahnschrift, "Segoe UI", Arial, Helvetica, sans-serif;
+    }
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 9999;
+      background: #F5F0E8;
+    }
+    #loading img {
+      width: 112px;
+      height: 112px;
+      display: block;
+    }
+    #loading .label {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6B1826;
+      font-weight: 600;
+    }
+    #boot-error {
+      display: none;
+      max-width: 640px;
+      margin: 40px auto;
+      padding: 16px;
+      border: 1px solid #E0D8CC;
+      white-space: pre-wrap;
+      color: #6B1826;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <img src="icons/Icon-192.png" alt="Businesses 4 Sale" width="112" height="112">
+    <div class="label">Businesses 4 Sale</div>
+  </div>
+  <div id="boot-error"></div>
+  <script>
+    function showBootError(message) {
+      var el = document.getElementById('boot-error');
+      var loading = document.getElementById('loading');
+      if (loading) loading.style.display = 'none';
+      if (el) {
+        el.style.display = 'block';
+        el.textContent = 'Failed to start: ' + message;
+      }
+    }
+    window.addEventListener('error', function (event) {
+      showBootError(event.message || String(event.error || 'unknown error'));
+    });
+    window.addEventListener('unhandledrejection', function (event) {
+      showBootError(String(event.reason || 'unhandled rejection'));
+    });
+  </script>
+  <script>
+    {{flutter_js}}
+    {{flutter_build_config}}
+
+    _flutter.loader.load({
+      onEntrypointLoaded: async function(engineInitializer) {
+        try {
+          const appRunner = await engineInitializer.initializeEngine();
+          const loading = document.getElementById('loading');
+          if (loading) loading.remove();
+          await appRunner.runApp();
+        } catch (err) {
+          showBootError(err && err.message ? err.message : String(err));
+        }
+      }
+    });
+  </script>
+</body>
+</html>
