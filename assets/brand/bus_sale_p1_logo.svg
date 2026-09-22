@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 420" fill="none">
+  <rect width="320" height="420" fill="#FFFFFF"/>
+  <g transform="translate(40,20)">
+    <defs>
+      <clipPath id="c"><circle cx="120" cy="120" r="112"/></clipPath>
+    </defs>
+    <g clip-path="url(#c)">
+      <circle cx="120" cy="120" r="112" fill="#E30613"/>
+      <path d="M8 120 A112 112 0 0 0 232 120 L232 232 L8 232 Z" fill="#FFD200"/>
+      <rect x="10" y="82" width="220" height="76" fill="#FFFFFF"/>
+    </g>
+    <circle cx="120" cy="120" r="112" stroke="#111111" stroke-width="5" fill="none"/>
+    <text x="120" y="128" text-anchor="middle"
+          font-family="Arial Black, Arial, Helvetica, sans-serif"
+          font-size="42" font-weight="800" fill="#111111">BUS.SALE</text>
+  </g>
+  <text x="160" y="310" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="22" font-weight="700" letter-spacing="1.5" fill="#111111">BUSINESSES 4 SALE</text>
+</svg>

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Brand colours — Atelier system (modern, elegant, sophisticated).
+/// Atelier palette David approved, with Pack p1 BUS.SALE lockup in assets.
 class AppColors {
   AppColors._();
 
@@ -10,7 +10,6 @@ class AppColors {
   static const Color ink = Color(0xFF1A1412);
   static const Color stone = Color(0xFFDED4C4);
 
-  /// Legacy aliases used across screens.
   static const Color red = claret;
   static const Color yellow = champagne;
   static const Color black = ink;
@@ -24,7 +23,7 @@ class AppTheme {
   AppTheme._();
 
   static ThemeData light() {
-    final base = ThemeData(
+    return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.claret,
@@ -42,8 +41,8 @@ class AppTheme {
         titleTextStyle: TextStyle(
           color: AppColors.ink,
           fontSize: 17,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.4,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.6,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -69,17 +68,12 @@ class AppTheme {
           foregroundColor: AppColors.white,
           minimumSize: const Size.fromHeight(48),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 15,
-            letterSpacing: 0.8,
-          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(foregroundColor: AppColors.claret),
       ),
     );
-    return base;
   }
 }

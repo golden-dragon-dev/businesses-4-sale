@@ -6,7 +6,14 @@ import 'package:businesses_4_sale/theme/app_theme.dart';
 import 'package:businesses_4_sale/widgets/ad_banner.dart';
 
 class DonateScreen extends StatefulWidget {
-  const DonateScreen({super.key});
+  const DonateScreen({
+    super.key,
+    this.showAdBanner = true,
+    this.embedded = false,
+  });
+
+  final bool showAdBanner;
+  final bool embedded;
 
   @override
   State<DonateScreen> createState() => _DonateScreenState();
@@ -56,10 +63,21 @@ class _DonateScreenState extends State<DonateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Donate')),
+      appBar: widget.embedded ? null : AppBar(title: const Text('Donate')),
       body: Column(
         children: [
-          const AdBanner(),
+          if (widget.embedded)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Donate',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                ),
+              ),
+            ),
+          if (widget.showAdBanner) const AdBanner(),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(20),

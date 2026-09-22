@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:businesses_4_sale/theme/app_theme.dart';
 
-/// BUS.SALE atelier mark — PNG assets with painted seal fallback.
+/// Atelier seal (geometric 4) + BUS · SALE wordmark — the mark David approved.
 class BusSaleLogo extends StatelessWidget {
   const BusSaleLogo({
     super.key,
@@ -20,7 +20,7 @@ class BusSaleLogo extends StatelessWidget {
     if (showWordmark) {
       return Image.asset(
         _logoAsset,
-        width: size * 1.05,
+        width: size * 1.2,
         fit: BoxFit.contain,
         filterQuality: FilterQuality.high,
         errorBuilder: (_, _, _) => _fallback(),
@@ -52,21 +52,23 @@ class BusSaleLogo extends StatelessWidget {
             'BUS · SALE',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: size * 0.14,
-              fontWeight: FontWeight.w600,
-              letterSpacing: size * 0.028,
+              fontSize: size * 0.23,
+              fontWeight: FontWeight.w900,
+              letterSpacing: size * 0.016,
               color: AppColors.ink,
+              height: 1.1,
             ),
           ),
-          SizedBox(height: size * 0.035),
+          SizedBox(height: size * 0.05),
           Text(
             'BUSINESSES FOR SALE',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: size * 0.055,
-              fontStyle: FontStyle.italic,
-              letterSpacing: size * 0.012,
+              fontSize: size * 0.072,
+              fontWeight: FontWeight.w700,
+              letterSpacing: size * 0.008,
               color: AppColors.claret,
+              height: 1.2,
             ),
           ),
         ],
@@ -82,7 +84,6 @@ class _AtelierSealPainter extends CustomPainter {
     final radius = size.width / 2 - size.width * 0.03;
 
     canvas.drawCircle(center, radius, Paint()..color = AppColors.ivory);
-
     canvas.drawCircle(
       center,
       radius,
@@ -98,14 +99,6 @@ class _AtelierSealPainter extends CustomPainter {
         ..color = AppColors.claret
         ..style = PaintingStyle.stroke
         ..strokeWidth = size.width * 0.012,
-    );
-    canvas.drawCircle(
-      center,
-      radius * 0.8,
-      Paint()
-        ..color = AppColors.stone.withValues(alpha: 0.7)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = size.width * 0.005,
     );
 
     final h = size.height * 0.42;
@@ -126,7 +119,6 @@ class _AtelierSealPainter extends CustomPainter {
       ..lineTo(stemX - stroke * 0.48, crossY + stroke * 0.48)
       ..close();
     canvas.drawPath(triangle, fill);
-
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTRB(left, crossY - stroke * 0.48, right, crossY + stroke * 0.48),

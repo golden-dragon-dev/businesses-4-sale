@@ -9,18 +9,31 @@ class AdSlide {
     required this.title,
     required this.subtitle,
     this.color = AppColors.red,
+    this.imageAsset,
   });
 
   final String title;
   final String subtitle;
   final Color color;
+  /// Optional full-bleed image (e.g. Pack p1 flyer).
+  final String? imageAsset;
 }
 
-/// Rotating advertisement / breaking-news strip (≈1/6 screen, 5s interval).
+/// Rotating advertisement strip.
+/// Default height is **1/3 of screen** (double the original Pack 1/6 slot).
+/// First slide is David's Pack p1 flyer.
+///
+/// Swipe the ad strip left/right to change ads manually. Prev / pause / next
+/// also work. Autoplay pauses as soon as you take control (press play to resume).
 class AdBanner extends StatefulWidget {
   const AdBanner({
     super.key,
     this.slides = const [
+      AdSlide(
+        title: 'Businesses 4 Sale',
+        subtitle: 'List your business for sale.',
+        imageAsset: 'assets/ads/p1_flyer.png',
+      ),
       AdSlide(
         title: 'List your business',
         subtitle: 'Retiring or resigning? Join and reach local buyers.',
@@ -51,7 +64,7 @@ class _AdBannerState extends State<AdBanner> {
   Timer? _timer;
   int _index = 0;
   bool _paused = false;
-  bool _enlarged = false;
+  bool _programmatic = false;
 
   @override
   void initState() {
@@ -69,12 +82,26 @@ class _AdBannerState extends State<AdBanner> {
     _timer = Timer.periodic(AppConfig.adRotateInterval, (_) {
       if (!mounted || _paused || widget.slides.isEmpty) return;
       final next = (_index + 1) % widget.slides.length;
-      _controller.animateToPage(
-        next,
-        duration: const Duration(milliseconds: 350),
-        curve: Curves.easeInOut,
-      );
+      _animateTo(next);
     });
+  }
+
+  Future<void> _animateTo(int page) async {
+    _programmatic = true;
+    await _controller.animateToPage(
+      page,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeInOut,
+    );
+    _programmatic = false;
+  }
+
+  void _takeManualControl({required int delta}) {
+    if (widget.slides.isEmpty) return;
+    setState(() => _paused = true);
+    var next = (_index + delta) % widget.slides.length;
+    if (next < 0) next = widget.slides.length - 1;
+    _animateTo(next);
   }
 
   @override
@@ -84,84 +111,53 @@ class _AdBannerState extends State<AdBanner> {
     super.dispose();
   }
 
-  void _go(int delta) {
-    if (widget.slides.isEmpty) return;
-    final next = (_index + delta) % widget.slides.length;
-    final target = next < 0 ? widget.slides.length - 1 : next;
-    _controller.animateToPage(
-      target,
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeOut,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final baseHeight = (screenHeight / 6).clamp(96.0, 160.0);
-    final height = _enlarged ? baseHeight * 2 : baseHeight;
+    // Double the original ≈1/6 slot → ≈1/3 of screen for the ad creative.
+    final adContentHeight = (screenHeight / 3).clamp(180.0, 340.0);
+    const controlsHeight = 40.0;
 
     return SizedBox(
-      height: height,
+      height: adContentHeight + controlsHeight,
       child: Column(
         children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _paused = true;
-                  _enlarged = true;
-                });
+          SizedBox(
+            height: adContentHeight,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                // Finger drag on the ad — stop autoplay so the user stays in control.
+                if (notification is ScrollStartNotification &&
+                    notification.dragDetails != null &&
+                    !_paused) {
+                  setState(() => _paused = true);
+                }
+                return false;
               },
               child: PageView.builder(
                 controller: _controller,
                 itemCount: widget.slides.length,
-                onPageChanged: (value) => setState(() => _index = value),
+                onPageChanged: (value) {
+                  setState(() {
+                    _index = value;
+                    if (!_programmatic) _paused = true;
+                  });
+                },
                 itemBuilder: (context, index) {
                   final slide = widget.slides[index];
-                  return ColoredBox(
-                    color: slide.color,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                  if (slide.imageAsset != null) {
+                    return ColoredBox(
+                      color: AppColors.ivory,
+                      child: Image.asset(
+                        slide.imageAsset!,
+                        fit: BoxFit.contain,
+                        width: double.infinity,
+                        height: double.infinity,
+                        errorBuilder: (_, _, _) => _TextAd(slide: slide),
                       ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 600),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  slide.title,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  slide.subtitle,
-                                  maxLines: _enlarged ? 4 : 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+                    );
+                  }
+                  return _TextAd(slide: slide);
                 },
               ),
             ),
@@ -169,12 +165,12 @@ class _AdBannerState extends State<AdBanner> {
           ColoredBox(
             color: AppColors.lightGrey,
             child: SizedBox(
-              height: 40,
+              height: controlsHeight,
               child: Row(
                 children: [
                   IconButton(
                     tooltip: 'Previous',
-                    onPressed: () => _go(-1),
+                    onPressed: () => _takeManualControl(delta: -1),
                     icon: const Icon(Icons.skip_previous, size: 20),
                     visualDensity: VisualDensity.compact,
                   ),
@@ -183,10 +179,7 @@ class _AdBannerState extends State<AdBanner> {
                     onPressed: () {
                       setState(() {
                         _paused = !_paused;
-                        if (!_paused) {
-                          _enlarged = false;
-                          _startTimer();
-                        }
+                        if (!_paused) _startTimer();
                       });
                     },
                     icon: Icon(_paused ? Icons.play_arrow : Icons.pause, size: 20),
@@ -194,27 +187,77 @@ class _AdBannerState extends State<AdBanner> {
                   ),
                   IconButton(
                     tooltip: 'Next',
-                    onPressed: () => _go(1),
+                    onPressed: () => _takeManualControl(delta: 1),
                     icon: const Icon(Icons.skip_next, size: 20),
                     visualDensity: VisualDensity.compact,
                   ),
                   const Spacer(),
-                  if (_enlarged)
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _enlarged = false;
-                          _paused = false;
-                          _startTimer();
-                        });
-                      },
-                      child: const Text('Back'),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Text(
+                      '${_index + 1}/${widget.slides.length}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.grey,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
+                  ),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TextAd extends StatelessWidget {
+  const _TextAd({required this.slide});
+
+  final AdSlide slide;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: slide.color,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    slide.title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    slide.subtitle,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

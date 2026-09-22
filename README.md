@@ -8,10 +8,11 @@ Matches Developer Pack v3.0 (amended) and the agreed fixed-scope build:
 - Browse current listings (last 2 days)
 - Browse by business type (last 7 days, codes 01–60)
 - Donate (Stripe UI; demo mode until keys arrive)
-- Privacy Policy, Terms of Use, expandable Disclaimer
+- Privacy Policy, Terms of Use, and a dedicated Disclaimer page
 - Rotating ad banner (5s) with pause / next / back
+- Horizontal swipe navigation between the main pages
 - Share App Store + Play Store links
-- Splash screen matches pack p3 (white + centered BUS.SALE badge)
+- White splash screen with the approved Atelier BUS.SALE mark
 - Admin via Firebase Console (no separate web dashboard)
 
 ## Run (demo mode — default)
@@ -32,7 +33,7 @@ lib/
   constants/       # Business types 01–60, legal copy
   data/            # Repositories + browse filters
   models/          # BusinessListing, ListingDraft
-  screens/         # Splash, Home, Join, Browse, Donate, Legal
+  screens/         # Splash, shell, Home, Disclaimer, Join, Browse, Donate, Legal
   services/        # Donations, share, platform guard
   widgets/         # Logo, ad banner, list tiles
 firestore/         # Firestore + Storage security rules
@@ -59,11 +60,14 @@ Until `STRIPE_PUBLISHABLE_KEY` is provided (and a PaymentIntent backend exists),
 flutter run --dart-define=STRIPE_PUBLISHABLE_KEY=pk_test_xxx
 ```
 
-## Client assets still pending
+## Production setup still pending
 
-- Clean PNG/SVG logo (placeholder painter used until then)
 - Apple Developer + Google Play accounts under client ABN
-- Stripe account for live donations
+- production Firebase configuration
+- Stripe account and secure payment backend for live donations
+- release signing and store submission
+
+See `CLIENT_HANDOVER.md` for the complete delivery and account status.
 
 ## Milestones (agreed)
 

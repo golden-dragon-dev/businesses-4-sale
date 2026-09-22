@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 200" fill="none">
-  <rect width="520" height="200" fill="#F5F0E8"/>
-  <g transform="translate(8,10) scale(0.75)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 560" fill="none">
+  <rect width="420" height="560" fill="#F5F0E8"/>
+  <g transform="translate(90,40)">
     <circle cx="120" cy="120" r="112" fill="#F5F0E8"/>
     <circle cx="120" cy="120" r="112" stroke="#C5A572" stroke-width="7"/>
     <circle cx="120" cy="120" r="98" stroke="#6B1826" stroke-width="3.2"/>
@@ -9,8 +9,11 @@
     <rect x="52" y="126" width="128" height="20" rx="2" fill="#6B1826"/>
     <rect x="126" y="48" width="20" height="144" rx="2" fill="#6B1826"/>
   </g>
-  <text x="210" y="96" font-family="Bahnschrift, Segoe UI, Arial, sans-serif"
-        font-size="42" font-weight="600" letter-spacing="8" fill="#1A1412">BUS · SALE</text>
-  <text x="210" y="132" font-family="Georgia, Times New Roman, serif" font-style="italic"
-        font-size="16" letter-spacing="3.5" fill="#6B1826">BUSINESSES FOR SALE</text>
+  <text x="210" y="340" text-anchor="middle"
+        font-family="Arial Black, Arial, sans-serif"
+        font-size="48" font-weight="800" letter-spacing="4" fill="#1A1412">BUS · SALE</text>
+  <line x1="160" y1="360" x2="260" y2="360" stroke="#C5A572" stroke-width="3"/>
+  <text x="210" y="400" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="18" font-weight="700" letter-spacing="2" fill="#6B1826">BUSINESSES FOR SALE</text>
 </svg>

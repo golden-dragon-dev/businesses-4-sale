@@ -28,11 +28,12 @@ WHITE = (255, 255, 255)
 
 
 def font_geo(size: int, bold: bool = True) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
-    """Geometric / modern UI faces available on Windows."""
+    """Heavy geometric faces for wordmark (client asked larger + bolder)."""
     candidates = [
-        r"C:\Windows\Fonts\bahnschrift.ttf",
-        r"C:\Windows\Fonts\segoeuib.ttf" if bold else r"C:\Windows\Fonts\segoeui.ttf",
         r"C:\Windows\Fonts\arialbd.ttf" if bold else r"C:\Windows\Fonts\arial.ttf",
+        r"C:\Windows\Fonts\segoeuib.ttf" if bold else r"C:\Windows\Fonts\segoeui.ttf",
+        r"C:\Windows\Fonts\bahnschrift.ttf",
+        r"C:\Windows\Fonts\impact.ttf",
     ]
     for p in candidates:
         if Path(p).exists():
@@ -171,85 +172,106 @@ def make_badge(size: int = 1024, mono: bool = False) -> Image.Image:
     return img.resize((size, size), Image.Resampling.LANCZOS)
 
 
+def text_metrics(bbox: tuple[int, int, int, int]) -> tuple[int, int]:
+    """Return (width, height) from a PIL textbbox."""
+    return bbox[2] - bbox[0], bbox[3] - bbox[1]
+
+
+def draw_text_top(
+    d: ImageDraw.ImageDraw,
+    xy_top_left: tuple[float, float],
+    text: str,
+    font: ImageFont.ImageFont,
+    fill: tuple[int, int, int, int],
+    bbox: tuple[int, int, int, int],
+) -> float:
+    """Draw text so its visual top is at xy_top_left[1]. Returns visual bottom y."""
+    x, top = xy_top_left
+    d.text((x - bbox[0], top - bbox[1]), text, font=font, fill=fill)
+    return top + (bbox[3] - bbox[1])
+
+
 def make_logo_vertical(size: int = 1024, *, on_ivory: bool = True) -> Image.Image:
-    """Seal + BUS · SALE + full name — splash / marketing lockup."""
+    """Seal + bold BUS · SALE + full name — clear vertical gaps, no overlap."""
     scale = 3
-    W = int(size * 1.05 * scale)
-    H = int(size * 1.55 * scale)
+    W = int(size * 1.12 * scale)
+    H = int(size * 1.95 * scale)
     bg = IVORY + (255,) if on_ivory else (0, 0, 0, 0)
     img = Image.new("RGBA", (W, H), bg)
     d = ImageDraw.Draw(img)
 
-    seal_s = int(size * 0.72 * scale)
+    seal_s = int(size * 0.52 * scale)
     seal = make_badge(seal_s)
     sx = (W - seal_s) // 2
-    sy = int(H * 0.06)
+    sy = int(H * 0.03)
     img.alpha_composite(seal, (sx, sy))
 
-    mark = "BUS · SALE"
-    target = W * 0.72
-    f, bbox = fit_text(d, mark, target, int(size * 0.095 * scale), bold=True)
-    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    tx = (W - tw) / 2 - bbox[0]
-    ty = sy + seal_s + H * 0.05 - bbox[1]
-    d.text((tx, ty), mark, font=f, fill=INK + (255,))
+    gap_seal = int(H * 0.04)
+    gap_rule = int(H * 0.024)
+    gap_sub = int(H * 0.03)
+    rule_h = max(3, H // 280)
 
-    rule_y = ty + th + H * 0.016
-    rw = W * 0.16
+    mark = "BUS · SALE"
+    f, bbox = fit_text(d, mark, W * 0.96, int(size * 0.175 * scale), bold=True)
+    tw, _ = text_metrics(bbox)
+    mark_top = sy + seal_s + gap_seal
+    mark_bottom = draw_text_top(
+        d, ((W - tw) / 2, mark_top), mark, f, INK + (255,), bbox
+    )
+
+    rule_y = mark_bottom + gap_rule
+    rw = W * 0.20
     d.rectangle(
-        [(W - rw) / 2, rule_y, (W + rw) / 2, rule_y + max(2, H // 400)],
+        [(W - rw) / 2, rule_y, (W + rw) / 2, rule_y + rule_h],
         fill=CHAMPAGNE + (255,),
     )
 
     sub = "BUSINESSES FOR SALE"
     f2, b2 = fit_text(
-        d, sub, W * 0.55, int(size * 0.038 * scale), bold=False, serif=True, italic=True
+        d, sub, W * 0.78, int(size * 0.055 * scale), bold=True, serif=False, italic=False
     )
-    tw2 = b2[2] - b2[0]
-    d.text(
-        ((W - tw2) / 2 - b2[0], rule_y + H * 0.022 - b2[1]),
-        sub,
-        font=f2,
-        fill=CLARET + (255,),
-    )
+    tw2, _ = text_metrics(b2)
+    sub_top = rule_y + rule_h + gap_sub
+    draw_text_top(d, ((W - tw2) / 2, sub_top), sub, f2, CLARET + (255,), b2)
 
-    return img.resize((size, int(size * 1.55)), Image.Resampling.LANCZOS)
+    return img.resize((int(size * 1.12), int(size * 1.85)), Image.Resampling.LANCZOS)
 
 
 def make_logo_horizontal(size: int = 1024, *, on_ivory: bool = True) -> Image.Image:
-    """Seal left + wordmark right — nav / header lockup."""
+    """Seal left + wordmark right — clear gap between title and subtitle."""
     scale = 3
     H = size * scale
-    W = int(size * 2.55 * scale)
+    W = int(size * 2.7 * scale)
     bg = IVORY + (255,) if on_ivory else (0, 0, 0, 0)
     img = Image.new("RGBA", (W, H), bg)
     d = ImageDraw.Draw(img)
 
-    seal_s = int(H * 0.88)
+    seal_s = int(H * 0.82)
     seal = make_badge(seal_s)
     sy = (H - seal_s) // 2
-    sx = int(H * 0.06)
+    sx = int(H * 0.05)
     img.alpha_composite(seal, (sx, sy))
 
-    mark = "BUS · SALE"
     left = sx + seal_s + H * 0.08
-    target = W - left - H * 0.08
-    f, bbox = fit_text(d, mark, target * 0.92, int(H * 0.22), bold=True)
-    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    tx = left - bbox[0]
-    ty = H / 2 - th / 2 - bbox[1] - H * 0.06
-    d.text((tx, ty), mark, font=f, fill=INK + (255,))
+    target = W - left - H * 0.06
+    mark = "BUS · SALE"
+    f, bbox = fit_text(d, mark, target * 0.95, int(H * 0.26), bold=True)
+    tw, th = text_metrics(bbox)
 
     sub = "BUSINESSES FOR SALE"
-    f2, b2 = fit_text(d, sub, target * 0.78, int(H * 0.075), bold=False, serif=True, italic=True)
-    d.text(
-        (tx, ty + th + H * 0.05 - b2[1]),
-        sub,
-        font=f2,
-        fill=CLARET + (255,),
+    f2, b2 = fit_text(d, sub, target * 0.88, int(H * 0.095), bold=True, serif=False)
+    tw2, th2 = text_metrics(b2)
+
+    gap = int(H * 0.09)
+    block_h = th + gap + th2
+    block_top = (H - block_h) / 2
+
+    draw_text_top(d, (left, block_top), mark, f, INK + (255,), bbox)
+    draw_text_top(
+        d, (left, block_top + th + gap), sub, f2, CLARET + (255,), b2
     )
 
-    return img.resize((int(size * 2.55), size), Image.Resampling.LANCZOS)
+    return img.resize((int(size * 2.7), size), Image.Resampling.LANCZOS)
 
 
 def make_app_icon(size: int = 1024) -> Image.Image:
@@ -345,9 +367,9 @@ def write_svgs() -> None:
 </svg>
 """
     logo_svg = """<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 200" fill="none">
-  <rect width="520" height="200" fill="#F5F0E8"/>
-  <g transform="translate(8,10) scale(0.75)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 560" fill="none">
+  <rect width="420" height="560" fill="#F5F0E8"/>
+  <g transform="translate(90,40)">
     <circle cx="120" cy="120" r="112" fill="#F5F0E8"/>
     <circle cx="120" cy="120" r="112" stroke="#C5A572" stroke-width="7"/>
     <circle cx="120" cy="120" r="98" stroke="#6B1826" stroke-width="3.2"/>
@@ -355,10 +377,13 @@ def write_svgs() -> None:
     <rect x="52" y="126" width="128" height="20" rx="2" fill="#6B1826"/>
     <rect x="126" y="48" width="20" height="144" rx="2" fill="#6B1826"/>
   </g>
-  <text x="210" y="96" font-family="Bahnschrift, Segoe UI, Arial, sans-serif"
-        font-size="42" font-weight="600" letter-spacing="8" fill="#1A1412">BUS · SALE</text>
-  <text x="210" y="132" font-family="Georgia, Times New Roman, serif" font-style="italic"
-        font-size="16" letter-spacing="3.5" fill="#6B1826">BUSINESSES FOR SALE</text>
+  <text x="210" y="340" text-anchor="middle"
+        font-family="Arial Black, Arial, sans-serif"
+        font-size="48" font-weight="800" letter-spacing="4" fill="#1A1412">BUS · SALE</text>
+  <line x1="160" y1="360" x2="260" y2="360" stroke="#C5A572" stroke-width="3"/>
+  <text x="210" y="400" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="18" font-weight="700" letter-spacing="2" fill="#6B1826">BUSINESSES FOR SALE</text>
 </svg>
 """
     (OUT / "bus_sale_v3_badge.svg").write_text(badge_svg, encoding="utf-8")

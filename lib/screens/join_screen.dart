@@ -10,7 +10,14 @@ import 'package:businesses_4_sale/theme/app_theme.dart';
 import 'package:businesses_4_sale/widgets/ad_banner.dart';
 
 class JoinScreen extends StatefulWidget {
-  const JoinScreen({super.key});
+  const JoinScreen({
+    super.key,
+    this.showAdBanner = true,
+    this.embedded = false,
+  });
+
+  final bool showAdBanner;
+  final bool embedded;
 
   @override
   State<JoinScreen> createState() => _JoinScreenState();
@@ -133,10 +140,23 @@ class _JoinScreenState extends State<JoinScreen> {
     final blocked = !PlatformGuard.canSubmitListing;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('JOIN (List your Business)')),
+      appBar: widget.embedded
+          ? null
+          : AppBar(title: const Text('JOIN (List your Business)')),
       body: Column(
         children: [
-          const AdBanner(),
+          if (widget.embedded)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'JOIN (List your Business)',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                ),
+              ),
+            ),
+          if (widget.showAdBanner) const AdBanner(),
           if (blocked)
             MaterialBanner(
               content: Text(PlatformGuard.blockedMessage),

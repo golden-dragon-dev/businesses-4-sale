@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:businesses_4_sale/screens/home_screen.dart';
+import 'package:businesses_4_sale/screens/main_shell_screen.dart';
 import 'package:businesses_4_sale/theme/app_theme.dart';
 import 'package:businesses_4_sale/widgets/bus_sale_logo.dart';
 
-/// Splash — ivory ground, Atelier seal + wordmark.
+/// Splash — client-aligned BUS.SALE mark.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -18,18 +18,19 @@ class _SplashScreenState extends State<SplashScreen> {
     Future<void>.delayed(const Duration(milliseconds: 1400), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(builder: (_) => const HomeScreen()),
+        MaterialPageRoute<void>(builder: (_) => const MainShellScreen()),
       );
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Pack p3: white background, BUS.SALE mark centered.
     return const Scaffold(
-      backgroundColor: AppColors.ivory,
+      backgroundColor: AppColors.white,
       body: SafeArea(
         child: Center(
-          child: BusSaleLogo(size: 180, showWordmark: true),
+          child: BusSaleLogo(size: 220, showWordmark: true),
         ),
       ),
     );

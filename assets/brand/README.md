@@ -1,40 +1,14 @@
-# Businesses 4 Sale — Brand Atelier (v3)
+# Businesses 4 Sale — Atelier mark (client-approved)
 
-Modern, elegant, sophisticated marketplace identity.
+David approved this system on the live preview:
+- Geometric **4** seal (claret / champagne / ivory)
+- **BUS · SALE** wordmark under the seal (now larger and bolder)
+- Home (**p2**) keeps Pack **p1** purpose copy on top
 
-## Direction
-Inspired by traits shared across enduring logo systems: geometric reduction, optical balance, a limited warm palette, type-led personality, and clarity from favicon to billboard. Marketplace neutrality without blandness — calm authority so listings stay the focus.
-
-## Palette
-| Token | Hex | Role |
-|-------|-----|------|
-| Claret | `#6B1826` | Primary / wordmark accent |
-| Champagne | `#C5A572` | Seal ring / metal accent |
-| Ivory | `#F5F0E8` | Field / app ground |
-| Ink | `#1A1412` | Primary type |
-| Stone | `#DED4C4` | Soft rings / borders |
-
-## Typography
-- **Wordmark:** Geometric sans (Bahnschrift), wide tracking, mid-dot `BUS · SALE`
-- **Secondary:** Georgia italic whisper — `BUSINESSES FOR SALE`
-- **Monogram:** Custom geometric **4** (drawn, not a stock glyph)
-
-## Files
-| File | Use |
-|------|-----|
-| `bus_sale_v3_badge.svg` | Vector seal master |
-| `bus_sale_v3_logo.svg` | Vector horizontal lockup |
-| `bus_sale_v3_badge_1024.png` | Seal / transparent icon |
-| `bus_sale_v3_badge_mono_1024.png` | Mono seal |
-| `bus_sale_v3_logo_splash.png` | Splash / marketing |
-| `bus_sale_v3_logo_horizontal.png` | Header lockup |
-| `bus_sale_v3_icon_1024.png` | App icon |
-| `bus_sale_v3_icon_1024_white_bg.png` | Store listing |
-| `bus_sale_v3_board.png` | Full review board |
-| `../images/bus_sale_badge.png` | Wired into Flutter |
-| `../images/bus_sale_logo.png` | Wired into Flutter |
+Do **not** replace this with the Pack red/yellow flyer badge unless David asks again.
 
 ## Regenerate
 ```bash
 python tools/generate_brand_v3.py
+python tools/qa_brand_v3.py
 ```

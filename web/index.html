@@ -18,7 +18,7 @@
       height: 100%;
       background: #F5F0E8;
       color: #1A1412;
-      font-family: Bahnschrift, "Segoe UI", Arial, Helvetica, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
     #loading {
       position: fixed;
@@ -27,21 +27,21 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       z-index: 9999;
       background: #F5F0E8;
     }
     #loading img {
-      width: 112px;
-      height: 112px;
+      width: 120px;
+      height: 120px;
       display: block;
     }
     #loading .label {
       font-size: 13px;
-      letter-spacing: 0.12em;
+      font-weight: 800;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #6B1826;
-      font-weight: 600;
     }
     #boot-error {
       display: none;
@@ -57,7 +57,7 @@
 </head>
 <body>
   <div id="loading">
-    <img src="icons/Icon-192.png" alt="Businesses 4 Sale" width="112" height="112">
+    <img src="icons/Icon-192.png" alt="BUS.SALE" width="120" height="120">
     <div class="label">Businesses 4 Sale</div>
   </div>
   <div id="boot-error"></div>

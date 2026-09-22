@@ -1,6 +1,7 @@
 # Miscellaneous
 *.class
 *.log
+*.tmp
 *.pyc
 *.swp
 .DS_Store
@@ -61,3 +62,6 @@ local.properties
 
 # Large local caches
 .tooling/
+
+# Client delivery archives
+Client_Delivery/
